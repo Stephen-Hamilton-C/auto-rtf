@@ -1,0 +1,458 @@
+{\rtf1 {\fonttbl {\f0 Liberation Sans;Sans Serif;}{\f1 FreeMono;}}
+\fs40
+\f0
+\b MainActivity.kt\b0\line
+\fs20
+\f1
+package app.shamilton.tutorial1
+\line
+
+\line
+import androidx.appcompat.app.AppCompatActivity
+\line
+import android.os.Bundle
+\line
+import android.widget.SeekBar
+\line
+import android.widget.TextView
+\line
+import androidx.appcompat.widget.Toolbar
+\line
+import app.shamilton.tutorial1.databinding.ActivityMainBinding
+\line
+import java.text.DecimalFormat
+\line
+import kotlin.math.roundToInt
+\line
+
+\line
+const val MAX_USD = 125.0
+\line
+const val USD_OVER_10_LBS = 1.25
+\line
+const val USD_UNDER_10_LBS = 1.75
+\line
+
+\line
+class MainActivity : AppCompatActivity() {
+\line
+  private lateinit var binding: ActivityMainBinding
+\line
+  private lateinit var _usdSeekBar: SeekBar
+\line
+  private lateinit var _lbsSeekBar: SeekBar
+\line
+  private lateinit var _usdTotal: TextView
+\line
+  private lateinit var _lbsTotal: TextView
+\line
+  private lateinit var _total: TextView
+\line
+
+\line
+  private fun initUIVars() {
+\line
+    _usdSeekBar = binding.usdSeekBar
+\line
+    _lbsSeekBar = binding.lbsSeekBar
+\line
+    _usdTotal = binding.usdTotal
+\line
+    _lbsTotal = binding.lbsTotal
+\line
+    _total = binding.total
+\line
+  }
+\line
+
+\line
+  override fun onCreate(savedInstanceState: Bundle?) {
+\line
+    super.onCreate(savedInstanceState)
+\line
+    binding = ActivityMainBinding.inflate(layoutInflater)
+\line
+    setContentView(binding.root)
+\line
+
+\line
+    initUIVars()
+\line
+    setSeekBarBoundaries()
+\line
+    setListeners()
+\line
+
+\line
+    addToolbar()
+\line
+  }
+\line
+
+\line
+  private fun addToolbar() {
+\line
+    setSupportActionBar(binding.toolbar);
+\line
+  }
+\line
+
+\line
+
+\line
+  private fun setSeekBarBoundaries(){
+\line
+    _usdSeekBar.min = 0
+\line
+    _usdSeekBar.max = MAX_USD.roundToInt()
+\line
+    _lbsSeekBar.min = 0
+\line
+    _lbsSeekBar.max = 100
+\line
+  }
+\line
+
+\line
+  private fun updateLbsText() {
+\line
+    _lbsTotal.text = "LBS: ${_lbsSeekBar.progress}"
+\line
+  }
+\line
+
+\line
+  private fun updateUSDText() {
+\line
+    _usdTotal.text = "USD: ${_usdSeekBar.progress}"
+\line
+    _total.text = "Total cost: ${_usdSeekBar.progress}"
+\line
+  }
+\line
+
+\line
+  private fun updateLbsFromUSD(usd: Double) {
+\line
+    _lbsSeekBar.progress = if(usd < 10 / USD_UNDER_10_LBS)
+\line
+      (usd / USD_UNDER_10_LBS).roundToInt()
+\line
+    else
+\line
+      (usd / USD_OVER_10_LBS).roundToInt()
+\line
+
+\line
+    updateLbsText()
+\line
+  }
+\line
+
+\line
+  private fun updateUSDFromLbs(lbs: Int) {
+\line
+    _usdSeekBar.progress = if(lbs < 10) {
+\line
+      (lbs * USD_UNDER_10_LBS).roundToInt()
+\line
+    } else {
+\line
+      (lbs * USD_OVER_10_LBS).roundToInt()
+\line
+    }
+\line
+
+\line
+    updateUSDText()
+\line
+  }
+\line
+
+\line
+  private fun setListeners() {
+\line
+    _usdSeekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+\line
+      override fun onProgressChanged(usdSeek: SeekBar, progress: Int, fromUser: Boolean) {
+\line
+        updateUSDText()
+\line
+      }
+\line
+
+\line
+      override fun onStartTrackingTouch(usdSeek: SeekBar) {}
+\line
+      override fun onStopTrackingTouch(usdSeek: SeekBar) {
+\line
+        updateLbsFromUSD(usdSeek.progress.toDouble())
+\line
+      }
+\line
+    })
+\line
+    _lbsSeekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+\line
+      override fun onProgressChanged(lbsSeek: SeekBar, progress: Int, fromUser: Boolean) {
+\line
+        updateLbsText()
+\line
+      }
+\line
+
+\line
+      override fun onStartTrackingTouch(lbsSeek: SeekBar) {}
+\line
+      override fun onStopTrackingTouch(lbsSeek: SeekBar) {
+\line
+        updateUSDFromLbs(lbsSeek.progress)
+\line
+      }
+\line
+    })
+\line
+  }
+\line
+}\line
+\line
+\fs40
+\f0
+\b activity_main.xml\b0\line
+\fs20
+\f1
+<?xml version="1.0" encoding="utf-8"?>
+\line
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+\line
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+\line
+  xmlns:tools="http://schemas.android.com/tools"
+\line
+  android:layout_width="match_parent"
+\line
+  android:layout_height="match_parent"
+\line
+  tools:context=".MainActivity">
+\line
+
+\line
+  <androidx.appcompat.widget.Toolbar
+\line
+    android:id="@+id/toolbar"
+\line
+    android:layout_width="match_parent"
+\line
+    android:layout_height="?attr/actionBarSize"
+\line
+    android:layout_marginTop="4dp"
+\line
+    android:background="?attr/colorPrimary"
+\line
+    android:elevation="4dp"
+\line
+    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+\line
+    app:layout_constraintEnd_toEndOf="parent"
+\line
+    app:layout_constraintHorizontal_bias="0.0"
+\line
+    app:layout_constraintStart_toStartOf="parent"
+\line
+    app:layout_constraintTop_toTopOf="parent"
+\line
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+\line
+
+\line
+  <ImageView
+\line
+    android:id="@+id/imageView"
+\line
+    android:layout_width="306dp"
+\line
+    android:layout_height="236dp"
+\line
+    android:layout_marginTop="28dp"
+\line
+    android:contentDescription="pricing"
+\line
+    app:layout_constraintEnd_toEndOf="parent"
+\line
+    app:layout_constraintHorizontal_bias="0.495"
+\line
+    app:layout_constraintStart_toStartOf="parent"
+\line
+    app:layout_constraintTop_toBottomOf="@+id/toolbar"
+\line
+    app:srcCompat="@drawable/pricing" />
+\line
+
+\line
+  <TextView
+\line
+    android:id="@+id/lbs_total"
+\line
+    android:layout_width="wrap_content"
+\line
+    android:layout_height="23dp"
+\line
+    android:layout_marginStart="8dp"
+\line
+    android:layout_marginEnd="8dp"
+\line
+    android:text="@string/lbs_label"
+\line
+    app:layout_constraintBottom_toTopOf="@+id/lbs_seek_bar"
+\line
+    app:layout_constraintEnd_toEndOf="parent"
+\line
+    app:layout_constraintHorizontal_bias="0.498"
+\line
+    app:layout_constraintStart_toStartOf="parent"
+\line
+    app:layout_constraintTop_toBottomOf="@+id/usd_seek_bar"
+\line
+    app:layout_constraintVertical_bias="0.573" />
+\line
+
+\line
+  <SeekBar
+\line
+    android:id="@+id/usd_seek_bar"
+\line
+    android:layout_width="294dp"
+\line
+    android:layout_height="27dp"
+\line
+    android:layout_marginStart="8dp"
+\line
+    android:layout_marginTop="32dp"
+\line
+    android:layout_marginEnd="8dp"
+\line
+    app:layout_constraintEnd_toEndOf="parent"
+\line
+    app:layout_constraintHorizontal_bias="0.495"
+\line
+    app:layout_constraintStart_toStartOf="parent"
+\line
+    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+\line
+
+\line
+  <SeekBar
+\line
+    android:id="@+id/lbs_seek_bar"
+\line
+    android:layout_width="294dp"
+\line
+    android:layout_height="30dp"
+\line
+    android:layout_marginStart="8dp"
+\line
+    android:layout_marginTop="32dp"
+\line
+    android:layout_marginEnd="8dp"
+\line
+    android:layout_marginBottom="8dp"
+\line
+    app:layout_constraintBottom_toBottomOf="parent"
+\line
+    app:layout_constraintEnd_toEndOf="parent"
+\line
+    app:layout_constraintHorizontal_bias="0.495"
+\line
+    app:layout_constraintStart_toStartOf="parent"
+\line
+    app:layout_constraintTop_toBottomOf="@+id/usd_seek_bar"
+\line
+    app:layout_constraintVertical_bias="0.218" />
+\line
+
+\line
+  <TextView
+\line
+    android:id="@+id/usd_total"
+\line
+    android:layout_width="wrap_content"
+\line
+    android:layout_height="23dp"
+\line
+    android:layout_marginStart="8dp"
+\line
+    android:layout_marginEnd="8dp"
+\line
+    android:text="@string/usd_label"
+\line
+    app:layout_constraintBottom_toTopOf="@+id/usd_seek_bar"
+\line
+    app:layout_constraintEnd_toEndOf="parent"
+\line
+    app:layout_constraintHorizontal_bias="0.498"
+\line
+    app:layout_constraintStart_toStartOf="parent"
+\line
+    app:layout_constraintTop_toBottomOf="@+id/imageView"
+\line
+    app:layout_constraintVertical_bias="1.0" />
+\line
+
+\line
+  <TextView
+\line
+    android:id="@+id/total"
+\line
+    android:layout_width="wrap_content"
+\line
+    android:layout_height="wrap_content"
+\line
+    android:layout_marginStart="8dp"
+\line
+    android:layout_marginTop="8dp"
+\line
+    android:layout_marginEnd="8dp"
+\line
+    android:layout_marginBottom="8dp"
+\line
+    android:text="@string/total_label"
+\line
+    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+\line
+    app:layout_constraintBottom_toBottomOf="parent"
+\line
+    app:layout_constraintEnd_toEndOf="parent"
+\line
+    app:layout_constraintHorizontal_bias="0.498"
+\line
+    app:layout_constraintStart_toStartOf="parent"
+\line
+    app:layout_constraintTop_toBottomOf="@+id/lbs_seek_bar"
+\line
+    app:layout_constraintVertical_bias="0.671" />
+\line
+
+\line
+</androidx.constraintlayout.widget.ConstraintLayout>
+\line
+\line
+\fs40
+\f0
+\b strings.xml\b0\line
+\fs20
+\f1
+<resources>
+\line
+  <string name="app_name">Tutorial1</string>
+\line
+  <string name="usd_label">USD:</string>
+\line
+  <string name="lbs_label">LBS:</string>
+\line
+  <string name="bitcoin_label">Bitcoin:</string>
+\line
+  <string name="total_label">TOTAL:</string>
+\line
+</resources>\line
+\line
+}

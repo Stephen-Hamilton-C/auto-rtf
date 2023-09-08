@@ -33,42 +33,46 @@ for char in longestMsg:
 print(divider)
 print()
 
-# TODO: These should be options, rather than optional arguments
-def showUsage():
-    print("Usage: "+SCRIPT_NAME+" [output-file] [android-studio-project-root]")
+
+
+# Setup argument parser
+def getDefaultOutputFile():
+    parentDir = os.path.dirname(SCRIPT_PATH)
+    parentDirName = os.path.basename(parentDir)
+    if parentDirName.startswith(".") and parentDirName.endswith("."):
+        parentDirName = os.path.basename(os.path.dirname(parentDir))
+
+    return parentDirName + ".rtf"
+
+parser = argparse.ArgumentParser(description="Compiles all Kotlin and relevant XML files from an Android Studio project and stuffs it into an RTF file. This can be used to export to PDF.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("-o", "--output-file", help="Specify file different file name or location. Default is script directory's name.", default=getDefaultOutputFile())
+parser.add_argument("-p", "--project-root", help="Specify a different location for the Android Studio root.", default="./")
+args = vars(parser.parse_args())
 
 # Validate arguments
-if len(sys.argv) > 1 and sys.argv[1].lower() == "help":
-    showUsage()
-    exit(0)
-
-if len(sys.argv) > 2:
-    PROJECT_DIR = sys.argv[2]
-    if not os.path.isdir(PROJECT_DIR):
-        print("Invalid path provided.")
-        showUsage()
-        exit(1)
-else:
-    PROJECT_DIR = os.path.dirname(SCRIPT_PATH)
+PROJECT_DIR = args["project_root"]
+if not os.path.isdir(PROJECT_DIR):
+    print("Invalid path provided.")
+    print("Use -h for usage info")
+    exit(1)
 
 MAIN_PATH = os.path.join(PROJECT_DIR, "app", "src", "main")
 
 if not os.path.exists(MAIN_PATH):
     print("Not a valid Android Studio project!")
-    if len(sys.argv) > 2:
-        print("Provide the path to the root of an Android Studio project")
+    if PROJECT_DIR == "./":
+        print("Provide a path to the root of an Android Studio project")
     else:
         print("Run this script at the root of an Android Studio project")
-    showUsage()
+    print("Use -h for usage info")
     exit(1)
 
-if len(sys.argv) > 1:
-    outputFilePath = os.path.splitext(sys.argv[1])[0]
-else:
-    outputFilePath = os.path.basename(PROJECT_DIR)
+outputFilePath = args["output_file"]
 
 ktFiles = []
 xmlFiles = []
+
+print("Found project at "+PROJECT_DIR)
 
 for root, dirs, files in os.walk(MAIN_PATH):
     for file in files:
@@ -80,8 +84,10 @@ for root, dirs, files in os.walk(MAIN_PATH):
                 filePath = os.path.join(root, file)
                 xmlFiles.append(filePath)
 
-print("Found Kotlin files: "+str(ktFiles))
-print("Found XML files: "+str(xmlFiles))
+ktS = "s" if len(ktFiles) != 1 else ""
+xmlS = "s" if len(xmlFiles) != 1 else ""
+print("Found "+str(len(ktFiles))+" Kotlin file"+ktS)
+print("Found "+str(len(xmlFiles))+" XML file"+xmlS)
 
 def codeToRTF(files) -> str:
     rtf = ""
@@ -117,10 +123,12 @@ rtfHeader = "{\\rtf1 "
 fontTable = "{\\fonttbl {\\f0 "+HEADER_FONTS+";}{\\f1 "+CODE_FONTS+";}}\n"
 rtfFooter = "}\n"
 
-with open(outputFilePath + ".rtf", 'w') as outputFile:
+with open(outputFilePath, 'w') as outputFile:
     outputFile.write(rtfHeader)
     outputFile.write(fontTable)
     outputFile.write(codeToRTF(ktFiles))
     outputFile.write(codeToRTF(xmlFiles))
     outputFile.write(rtfFooter)
+
+print("Gathered file contents into "+outputFilePath+". Be sure to open the file in Microsoft Word or LibreOffice Writer and print to PDF!")
 
