@@ -10,30 +10,9 @@ import sys
 import re
 import argparse
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 SCRIPT_PATH = __file__
 SCRIPT_NAME = os.path.basename(SCRIPT_PATH)
-
-# Messages to show when first running
-WELCOME_MSGS = [
-        "auto-rtf.py version "+VERSION,
-        "Written by Stephen Hamilton"
-]
-# Get the longest welcome message
-longestMsg = ""
-for welcomeMsg in WELCOME_MSGS:
-    if len(welcomeMsg) > len(longestMsg):
-        longestMsg = welcomeMsg
-    print(welcomeMsg)
-
-# Generate divider that is twice as long as the longest message
-divider = ""
-for char in longestMsg:
-    divider += "=="
-print(divider)
-print()
-
-
 
 # Setup argument parser
 def getDefaultOutputFile():
@@ -44,10 +23,15 @@ def getDefaultOutputFile():
 
     return parentDirName + ".rtf"
 
-parser = argparse.ArgumentParser(description="Compiles all Kotlin and relevant XML files from an Android Studio project and stuffs it into an RTF file. This can be used to export to PDF.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(prog="auto-rtf", description="Compiles all Kotlin and relevant XML files from an Android Studio project and stuffs it into an RTF file. This can be used to export to PDF.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-o", "--output-file", help="Specify file different file name or location. Default is script directory's name.", default=getDefaultOutputFile())
 parser.add_argument("-p", "--project-root", help="Specify a different location for the Android Studio root.", default="./")
+parser.add_argument("-v", "--version", help="Prints current version", action="store_true")
 args = vars(parser.parse_args())
+
+if args["version"]:
+        print("auto-rtf version "+VERSION)
+        exit(0)
 
 # Validate arguments
 PROJECT_DIR = args["project_root"]
