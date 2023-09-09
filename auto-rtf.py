@@ -1,5 +1,3 @@
-#!/bin/python3
-
 HEADER_FONTS = "Liberation Sans;Sans Serif"
 HEADER_SIZE_PT = 20
 CODE_FONTS = "FreeMono"
