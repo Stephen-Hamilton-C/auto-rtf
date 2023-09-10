@@ -9,6 +9,7 @@ import re
 import argparse
 
 VERSION = "1.0.2"
+BUG_URL = "https://github.com/Stephen-Hamilton-C/auto-rtf/issues/new"
 SCRIPT_PATH = __file__
 SCRIPT_NAME = os.path.basename(SCRIPT_PATH)
 
@@ -25,7 +26,14 @@ parser = argparse.ArgumentParser(prog="auto-rtf", description="Compiles all Kotl
 parser.add_argument("-o", "--output-file", help="Specify file different file name or location. Default is script directory's name.", default=getDefaultOutputFile())
 parser.add_argument("-p", "--project-root", help="Specify a different location for the Android Studio root.", default="./")
 parser.add_argument("-v", "--version", help="Prints current version", action="store_true")
+parser.add_argument("-b", "--report-bug", help="Opens a web browser to report a bug", action="store_true")
 args = vars(parser.parse_args())
+
+if args["report_bug"]:
+    print("Opening web browser to "+BUG_URL)
+    import webbrowser
+    webbrowser.open(BUG_URL)
+    exit(0)
 
 if args["version"]:
         print("auto-rtf version "+VERSION)
