@@ -9,7 +9,7 @@ import re
 import argparse
 
 VERSION = "1.0.2"
-BUG_URL = "https://github.com/Stephen-Hamilton-C/auto-rtf/issues/new"
+BUG_URL = "https://github.com/Stephen-Hamilton-C/auto-rtf/issues/new?assignees=Stephen-Hamilton-C&labels=&projects=&template=bug_report.md"
 SCRIPT_PATH = __file__
 SCRIPT_NAME = os.path.basename(SCRIPT_PATH)
 
