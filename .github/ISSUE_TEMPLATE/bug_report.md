@@ -23,4 +23,4 @@ If applicable, add screenshots to help explain your problem.
 **Computer Specs**
  - OS: [e.g. Windows]
  - Interface: [e.g. Terminal, Double-clicked]
- - Version [e.g. 1.0.0]
+ - Version [e.g. 1.0.0] (Run `python auto-rtf.py --version` to check what version you're running)
