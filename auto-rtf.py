@@ -8,7 +8,7 @@ import sys
 import re
 import argparse
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 SCRIPT_PATH = __file__
 SCRIPT_NAME = os.path.basename(SCRIPT_PATH)
 
@@ -93,7 +93,10 @@ def codeToRTF(files) -> str:
         rtf += "\\f1\n"
         with open(file, 'r') as codeFile:
             for codeFileLine in codeFile:
-                rtf += re.sub("    ", "  ", codeFileLine)
+                replacedSpaces = re.sub("    ", "  ", codeFileLine)
+                replacedOpenBraces = re.sub("{", "\\{", replacedSpaces)
+                replacedCloseBraces = re.sub("}", "\\}", replacedOpenBraces)
+                rtf += replacedCloseBraces
                 rtf += "\\line\n"
         rtf += "\\line\n"
 
