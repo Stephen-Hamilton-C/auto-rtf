@@ -1,13 +1,16 @@
+# Settings
 HEADER_FONTS = "Liberation Sans;Sans Serif"
 HEADER_SIZE_PT = 20
 CODE_FONTS = "FreeMono"
 CODE_SIZE_PT = 10
 
+# Imports
 import os
 import sys
 import re
 import argparse
 
+# Constants
 VERSION = "1.0.2"
 BUG_URL = "https://github.com/Stephen-Hamilton-C/auto-rtf/issues/new?assignees=Stephen-Hamilton-C&labels=&projects=&template=bug_report.md"
 SCRIPT_PATH = __file__
@@ -22,6 +25,7 @@ def getDefaultOutputFile():
 
     return parentDirName + ".rtf"
 
+# Setup arguments
 parser = argparse.ArgumentParser(prog="auto-rtf", description="Compiles all Kotlin and relevant XML files from an Android Studio project and stuffs it into an RTF file. This can be used to export to PDF.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-o", "--output-file", help="Specify file different file name or location. Default is script directory's name.", default=getDefaultOutputFile())
 parser.add_argument("-p", "--project-root", help="Specify a different location for the Android Studio root.", default="./")
@@ -29,25 +33,29 @@ parser.add_argument("-v", "--version", help="Prints current version", action="st
 parser.add_argument("-b", "--report-bug", help="Opens a web browser to report a bug", action="store_true")
 args = vars(parser.parse_args())
 
+# Open browser if report_bug option is present
 if args["report_bug"]:
     print("Opening web browser to "+BUG_URL)
     import webbrowser
     webbrowser.open(BUG_URL)
     exit(0)
 
+# Report version if version option is present
 if args["version"]:
         print("auto-rtf version "+VERSION)
         exit(0)
 
 # Validate arguments
+
+# Validate project_root is a directory
 PROJECT_DIR = args["project_root"]
 if not os.path.isdir(PROJECT_DIR):
     print("Invalid path provided.")
     print("Use -h for usage info")
     exit(1)
 
+# Check that project_root is indeed an Android Studio project
 MAIN_PATH = os.path.join(PROJECT_DIR, "app", "src", "main")
-
 if not os.path.exists(MAIN_PATH):
     print("Not a valid Android Studio project!")
     if PROJECT_DIR == "./":
@@ -59,10 +67,11 @@ if not os.path.exists(MAIN_PATH):
 
 outputFilePath = args["output_file"]
 
+print("Found project at "+PROJECT_DIR)
+
+# Find all kt and relevant xml files
 ktFiles = []
 xmlFiles = []
-
-print("Found project at "+PROJECT_DIR)
 
 for root, dirs, files in os.walk(MAIN_PATH):
     for file in files:
@@ -74,15 +83,19 @@ for root, dirs, files in os.walk(MAIN_PATH):
                 filePath = os.path.join(root, file)
                 xmlFiles.append(filePath)
 
+# Add an s if there are multiple files
 ktS = "s" if len(ktFiles) != 1 else ""
 xmlS = "s" if len(xmlFiles) != 1 else ""
+# Report number of files
 print("Found "+str(len(ktFiles))+" Kotlin file"+ktS)
 print("Found "+str(len(xmlFiles))+" XML file"+xmlS)
 
+# Converts files to RTF
 def codeToRTF(files) -> str:
     rtf = ""
     for file in files:
         # Set font size
+        # RTF uses half-px units
         rtf += "\\fs"+str(round(HEADER_SIZE_PT * 2))+"\n"
         # Set font to header font
         rtf += "\\f0\n"
@@ -99,19 +112,25 @@ def codeToRTF(files) -> str:
         rtf += "\\fs"+str(round(CODE_SIZE_PT * 2))+"\n"
         # Set font to code font
         rtf += "\\f1\n"
+
+        # Place contents of code into RTF string
         with open(file, 'r') as codeFile:
             for codeFileLine in codeFile:
+                # Make spaces smaller
                 replacedSpaces = re.sub("    ", "  ", codeFileLine)
+                # Ensure braces are shown
                 replacedOpenBraces = re.sub("{", "\\{", replacedSpaces)
                 replacedCloseBraces = re.sub("}", "\\}", replacedOpenBraces)
+                # Add modified line to RTF string
                 rtf += replacedCloseBraces
                 rtf += "\\line\n"
         rtf += "\\line\n"
 
-
     return rtf
 
 
+# RTF Syntax things
+# You can blame macOS for this being excessively complicated
 fontTable = "{\\fonttbl\\f0\\fswiss\\fcharset0 "+HEADER_FONTS+";\\f1\\fswiss\\fcharset0 "+CODE_FONTS+";}"
 rtfHeader = """{\\rtf1\\ansi\\ansicpg1252\\cocoartf2709
 \\cocoatextscaling0\\cocoaplatform0""" + fontTable + """
@@ -123,6 +142,7 @@ rtfHeader = """{\\rtf1\\ansi\\ansicpg1252\\cocoartf2709
 """
 rtfFooter = "}\n"
 
+# Create output file
 with open(outputFilePath, 'w') as outputFile:
     outputFile.write(rtfHeader)
     outputFile.write(codeToRTF(ktFiles))

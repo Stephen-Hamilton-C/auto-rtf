@@ -1,5 +1,5 @@
 # Auto RTF
-This script was made by an annoyed CS3714 student to instantly compile all his
+This script was made by an Android CS3714 student to instantly compile all his
 code into one RTF file that could easily be used to export to a PDF.
 
 ## Requirements
