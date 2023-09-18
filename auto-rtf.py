@@ -70,7 +70,7 @@ for root, dirs, files in os.walk(MAIN_PATH):
             filePath = os.path.join(root, file)
             ktFiles.append(filePath)
         elif file.endswith(".xml"):
-            if root.endswith("layout") or file == "strings.xml":
+            if root.endswith("layout") or root.endswith("navigation") or file == "strings.xml":
                 filePath = os.path.join(root, file)
                 xmlFiles.append(filePath)
 
