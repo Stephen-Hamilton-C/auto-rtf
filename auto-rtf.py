@@ -112,13 +112,19 @@ def codeToRTF(files) -> str:
     return rtf
 
 
-rtfHeader = "{\\rtf1 "
-fontTable = "{\\fonttbl {\\f0 "+HEADER_FONTS+";}{\\f1 "+CODE_FONTS+";}}\n"
+fontTable = "{\\fonttbl\\f0\\fswiss\\fcharset0 "+HEADER_FONTS+";\\f1\\fswiss\\fcharset0 "+CODE_FONTS+";}"
+rtfHeader = """{\\rtf1\\ansi\\ansicpg1252\\cocoartf2709
+\\cocoatextscaling0\\cocoaplatform0""" + fontTable + """
+{\\colortbl;\\red255\\green255\\blue255;}
+{\\*\\expandedcolortbl;;}
+\\margl1440\\margr1440\\vieww13440\\viewh7800\\viewkind0
+\\pard\\tx720\\tx1440\\tx2160\\tx2880\\tx3600\\tx4320\\tx5040\\tx5760\\tx6480\\tx7200\\tx7920\\tx8640\\pardirnatural\\partightenfactor0
+
+"""
 rtfFooter = "}\n"
 
 with open(outputFilePath, 'w') as outputFile:
     outputFile.write(rtfHeader)
-    outputFile.write(fontTable)
     outputFile.write(codeToRTF(ktFiles))
     outputFile.write(codeToRTF(xmlFiles))
     outputFile.write(rtfFooter)
