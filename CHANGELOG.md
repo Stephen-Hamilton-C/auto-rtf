@@ -4,9 +4,9 @@ All notable changes to auto-rtf will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 auto-rtf uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# 1.0.3 - Unreleased
+# 1.0.3 - 2023-09-18
 - Fixed nav graphs not being included in the PDF
-- Fixed macOS TextEdit not being able to open generated RTF files
+- Fixed macOS TextEdit not being able to open generated RTF files ([#1](https://github.com/Stephen-Hamilton-C/auto-rtf/issues/1))
 
 # 1.0.2 - 2023-09-10
 - Fixed braces not showing up in RTF file
