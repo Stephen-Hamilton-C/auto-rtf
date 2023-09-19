@@ -2,6 +2,9 @@
 This script was made by an Android CS3714 student to instantly compile all his
 code into one RTF file that could easily be used to export to a PDF.
 
+![image](https://github.com/Stephen-Hamilton-C/auto-rtf/assets/60950821/a0d6eea1-ef19-47dd-8c6c-88128626d9ce)
+
+
 ## Requirements
 You must have Python 3 or later installed on your system.
 
@@ -10,7 +13,7 @@ You must have Python 3 or later installed on your system.
 1. Drop `auto-rtf.py` into your Android Studio project
 2. Double click on the file in File Explorer or Finder
 3. You should see an RTF file appear with the same name as the project folder
-4. Open this RTF file and print to PDF
+4. Open this RTF file and print (CTRL+P or ⌘+P) to PDF
 5. Any time you make changes to the code, simply run the script again!
 
 ### Linux/CLI
