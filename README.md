@@ -28,6 +28,7 @@ Here are some helpful options:
 - `--project-root`, `-p`: Specifies a root directory for an Android Studio project
 - `--version`, `-v`: Displays the current version of auto-rtf
 - `--report-bug`, `-b`: Opens the default web browser to report a bug
+- `--remove-watermark`, `-w`: Removes the watermark placed at the top of the RTF file
 
 To run this in the command line, use `python auto-rtf.py --help`
 If that doesn't work, try `python3` instead of `python`.
