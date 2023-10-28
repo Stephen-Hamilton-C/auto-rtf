@@ -4,6 +4,9 @@ All notable changes to auto-rtf will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 auto-rtf uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# 1.1.1 - 2023-10-27
+- `.java` files are now included in the rtf
+
 # 1.1.0 - 2023-10-03
 - Fixed some layout XML files not being included
 - Added watermark to the top of the file
