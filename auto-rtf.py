@@ -11,7 +11,7 @@ import re
 import argparse
 
 # Constants
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 BUG_URL = "https://github.com/Stephen-Hamilton-C/auto-rtf/issues/new?assignees=Stephen-Hamilton-C&labels=&projects=&template=bug_report.md"
 SCRIPT_PATH = __file__
 SCRIPT_NAME = os.path.basename(SCRIPT_PATH)
@@ -76,7 +76,7 @@ xmlFiles = []
 
 for root, dirs, files in os.walk(MAIN_PATH):
     for file in files:
-        if file.endswith(".kt"):
+        if file.endswith(".kt") or file.endswith(".java"):
             filePath = os.path.join(root, file)
             ktFiles.append(filePath)
         elif file.endswith(".xml"):
